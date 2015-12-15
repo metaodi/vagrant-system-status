@@ -1,0 +1,23 @@
+#!/bin/bash
+
+root_dir="$HOME"
+status_filter="(poweroff)"
+if [ -n "$1" ] ; then
+     root_dir=$1
+     status_filter="(not created|poweroff)"
+fi
+
+for vdir in `find $root_dir -name .vagrant -type d 2>/dev/null`; do
+    cd $vdir
+    cd ..
+    vtext=`vagrant status 2>/dev/null | awk '{$1=""; print $0}' | sed 's/^ //g' | grep 'virtualbox' | GREP_COLOR="2;32" egrep --color=always "$status_filter"`
+    if [ -z "$vtext" ] ; then
+        vtext=`vagrant status 2>/dev/null | awk '{$1=""; print $0}' | sed 's/^ //g' | grep 'virtualbox' | egrep --color=always "(running)"` 
+    fi
+    if [ -z "$vtext" -a -n "$1" ] ; then
+        vtext=`echo missing | GREP_COLOR="2;36" egrep --color=always "(missing)"` 
+    fi
+    if [ -n "$vtext" ] ; then
+        echo "$vtext: "`pwd`
+    fi
+done
