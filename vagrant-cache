@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -n "$1" -o ! -f /tmp/vagrant-status ] ; then
-    /home/odi/progs/vagrant-status | tee /tmp/vagrant-status
+    $HOME/bin/vagrant-status | tee /tmp/vagrant-status
 else
     cat /tmp/vagrant-status
 fi
